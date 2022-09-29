@@ -13,8 +13,8 @@ their watchlist. The application will also track how often a movie is searched f
 watchlist. This information will be used to determine a suggested list of movies for users to watch.
 
 ### 3. What data will be stored?
-The application will store movies, users, and watchlists. The movies will be stored with the movie title, movie
-description, number of times accessed, a rotten tomatoes or IMDB rating, and a list of streaming services that the movie
-is available on. The users will be stored with a username, password, permission set, and a list of movies that they have
-added to their watchlist. The watchlists will be stored as a list of movies and will be identified by its owner, the
-user. 
+The application will store platforms, movies, users, and watchlists. The platform will contain the platform's name,
+subscription price. The movies will be stored with the movie title, movie description, number of times accessed, a
+rotten tomatoes or IMDB rating, and a list of streaming services that the movie is available on. The users will be
+stored with a username, password, permission set, and a list of movies that they have added to their watchlist. The
+watchlists will be stored as a list of movies and will be identified by its owner, the user.
