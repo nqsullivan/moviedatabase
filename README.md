@@ -18,5 +18,3 @@ subscription price. The movies will be stored with the movie title, movie descri
 rotten tomatoes or IMDB rating, and a list of streaming services that the movie is available on. The users will be
 stored with a username, password, permission set, and a list of movies that they have added to their watchlist. The
 watchlists will be stored as a list of movies and will be identified by its owner, the user.
-
-
