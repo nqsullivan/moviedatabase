@@ -12,7 +12,7 @@ The application will allow admin users to CRUD movies. It will allow regular use
 their watchlist. The application will also track how often a movie is searched for and how often it is added to a
 watchlist. This information will be used to determine a suggested list of movies for users to watch.
 
-### 3. What data will be stored??
+### 3. What data will be stored?
 The application will store platforms, movies, users, and watchlists. The platform will contain the platform's name,
 subscription price. The movies will be stored with the movie title, movie description, number of times accessed, a
 rotten tomatoes or IMDB rating, and a list of streaming services that the movie is available on. The users will be
