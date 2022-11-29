@@ -15,7 +15,7 @@ const Navbar = () => {
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: 'lightgrey'}}>
-            <h1>Fantasy Football Lineup Optimizer</h1>
+            <h1>Movie Database Project</h1>
             <div>
                 <Link to={'/'} style={{marginRight: '2rem'}}>Home</Link>
                 <Link to={'/watchlist'} style={{marginRight: '2rem'}}>WatchList</Link>
