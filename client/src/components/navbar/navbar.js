@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-// import {useDispatch} from "react-redux";
+import React, {useContext} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/user-context.js';
 
 /**
  * A navigation bar that is displayed on the top of the page.
@@ -11,7 +11,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 const Navbar = () => {
 
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
+    const {user, setUser} = useContext(UserContext);
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: 'lightgrey'}}>
@@ -19,7 +19,14 @@ const Navbar = () => {
             <div>
                 <Link to={'/'} style={{marginRight: '2rem'}}>Home</Link>
                 <Link to={'/watchlist'} style={{marginRight: '2rem'}}>WatchList</Link>
-                <Link to={'/login'} style={{marginRight: '2rem'}}>Login</Link>
+                {user ?
+                    <>
+                        <span style={{marginRight: '2rem'}}>Logged in as: {user}</span>
+                        <button onClick={() => { setUser(null); navigate('/'); }}>Logout</button>
+                    </>
+                    :
+                    <Link to={'/login'} style={{marginRight: '2rem'}}>Login/Signup</Link>
+                }
             </div>
         </div>
     );
