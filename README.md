@@ -12,8 +12,9 @@
 4. Grant all privileges on `moviedatabase` to `moviedbuser`
 5. Run `mysql -u moviedbuser -p moviedatabase < moviedatabase.sql` to create the tables and populate them with data
 
-## Additional Dependencies
+## Dependencies
 + [Maven](https://maven.apache.org/download.cgi) installation
 + Java 11 or higher
++ See pom.xml for additional dependencies
 
 
