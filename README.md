@@ -14,6 +14,6 @@
 
 ## Dependencies
 + [Maven](https://maven.apache.org/download.cgi) installation
-+ Java 11 or higher
++ Java 8 or higher
 
 
