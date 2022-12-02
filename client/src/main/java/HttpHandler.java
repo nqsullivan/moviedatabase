@@ -1,8 +1,11 @@
 package main.java;
 
-import java.net.URI;
-import java.net.http.*;
-import java.net.http.HttpResponse.BodyHandlers;
+
+import static spark.Spark.get;
+
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class HttpHandler {
 
