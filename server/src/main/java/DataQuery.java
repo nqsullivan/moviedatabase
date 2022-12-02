@@ -22,9 +22,17 @@ public class DataQuery {
 	static Statement stmt;
 	
 	DataQuery() {
-		url = "jdbc:mysql://localhost:3306/moviedatabase";
-		user  = "moviedbuser";
-		password = "moviedbpassword";
+
+		// Get database credentials from config.properties
+		Properties prop = readPropertiesFile("config.properties");
+		url = prop.getProperty("DB_URL");
+		user = prop.getProperty("DB_USER");
+		password = prop.getProperty("DB_PASS");
+
+		assert url != null;
+		assert user != null;
+		assert password != null;
+
 		rs = null;
 		conn = null;
 		stmt = null;
@@ -34,6 +42,16 @@ public class DataQuery {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Properties readPropertiesFile(String fileName) {
+		Properties prop = new Properties();
+		try (InputStream input = new FileInputStream(fileName)) {
+			prop.load(input);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return prop;
 	}
 	
 	//Closes database connection
