@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 package main.java;
 
 import java.sql.Connection;
@@ -9,6 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+/**
+ * Creates connection to moviedatabase and provides methods to make
+ * predefined sql queries
+ * 
+ * @author J. Scotty Solomon
+ */
 
 public class DataQuery {
 	static String url;
@@ -25,6 +28,7 @@ public class DataQuery {
 		rs = null;
 		conn = null;
 		stmt = null;
+		
 		try {
 			conn = DriverManager.getConnection(url,user,password);
 		} catch (SQLException e) {
@@ -32,7 +36,7 @@ public class DataQuery {
 		}
 	}
 	
-	//closes DB connection
+	//Closes database connection
 	public void closeConnection() {
 		try {
 			if(conn != null)	conn.close();
@@ -44,7 +48,7 @@ public class DataQuery {
 		}
 	}
 	
-	//create user
+	//Returns true if new user was created with inputed email and password
 	public boolean createUser(String userEmail, String password) {
 		try {
 			stmt = conn.createStatement();
@@ -59,7 +63,8 @@ public class DataQuery {
 		
 		return true;
 	}
-	//checks if user and password exists in database
+	
+	//Checks if specified email and password exist as a key value in the database
 	public boolean validateUser(String userEmail, String password) {
 		Boolean ret = false;
 		try {
@@ -79,7 +84,7 @@ public class DataQuery {
 		return ret;
 	}
 	
-	//return list of all movies
+	//Returns Json string containing data for all movies in the database
 	public String allMovies(){
 		try {
 			stmt = conn.createStatement();
@@ -97,6 +102,7 @@ public class DataQuery {
 		return null;
 	}
 	
+	//Returns Json string containing data for all TV shows in the database
 	public String allTvShows(){
 		try {
 			stmt = conn.createStatement();
@@ -114,6 +120,7 @@ public class DataQuery {
 		
 	}
 	
+	//Returns Json string containing all saved media within a specified user's watch-list
 	public String watchlist(String userEmail) {
 		try {
 			stmt = conn.createStatement();
@@ -130,8 +137,7 @@ public class DataQuery {
 		
 	}
 	
-	
-	
+	//Returns a Json string of all movies offered by a specified platform
 	public String platformOffers(String pName) {
 		try {
 			conn = DriverManager.getConnection(url,user,password);
