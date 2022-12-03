@@ -25,7 +25,10 @@ const Navbar = () => {
                         <button onClick={() => { setUser(null); navigate('/'); }}>Logout</button>
                     </>
                     :
-                    <Link to={'/login'} style={{marginRight: '2rem'}}>Login/Signup</Link>
+                    <>
+                        <Link to={'/login'} style={{marginRight: '2rem'}}>Login</Link>
+                        <Link to={'/signup'} style={{marginRight: '2rem'}}>Sign Up</Link>
+                    </>
                 }
             </div>
         </div>

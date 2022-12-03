@@ -99,8 +99,10 @@ public class DataQuery {
 					"' and password = '" + password + "';";
 			
 			rs = stmt.executeQuery(query);
-			
-			ret = rs.next();
+
+			if(rs.next()) {
+				ret = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -114,7 +116,7 @@ public class DataQuery {
 		try {
 			stmt = conn.createStatement();
 			
-			String query = "select grossrevenue, releasetype, releasedate, title from movie";
+			String query = "select grossrevenue, releasetype, media.releasedate, media.title, rating from movie NATURAL JOIN Media WHERE movie.releasedate = media.releasedate and movie.title = media.title;";
 			rs = stmt.executeQuery(query);
 
 			return JsonCreator.toJson(rs).toString();

@@ -3,6 +3,7 @@ import {UserContext} from "./context/user-context.js";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./pages/home/home.js";
 import Login from "./pages/login/login.js";
+import SignUp from "./pages/signup/signup.js";
 import Watchlist from "./pages/watchlist/watchlist.js";
 
 /**
@@ -28,6 +29,10 @@ const App = () => {
         {
             path: '/login',
             element: <Login/>
+        },
+        {
+            path: '/signup',
+            element: <SignUp/>
         },
         {
             path: '/watchlist',

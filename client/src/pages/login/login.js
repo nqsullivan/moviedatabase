@@ -20,10 +20,20 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLoginSubmit = (event) => {
-        // TODO: Send a request to the server to login
-        setUser(username);
-        // Navigate to the home page
-        navigate('/');
+        // Send a request to the server to login
+        fetch("http://localhost:8080/validateUser/" + username + '/' + password, {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                if (result === 'true') {
+                    setUser(username);
+                    navigate('/');
+                } else {
+                    alert('Invalid username or password');
+                }
+            })
     }
 
     return (

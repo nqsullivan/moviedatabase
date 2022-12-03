@@ -12,91 +12,100 @@ const Home = () => {
 
     const {user, setUser} = useContext(UserContext);
 
-    const [movies, setMovies] = React.useState([
-        {
-            id: 1,
-            title: 'The Shawshank Redemption',
-            releaseDate: '1994-09-23',
-            rating: '8.7',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '28,341,469'
-        },
-        {
-            id: 2,
-            title: 'The Godfather',
-            releaseDate: '1972-03-24',
-            rating: '9.2',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '134,966,411'
-        },
-        {
-            id: 3,
-            title: 'The Godfather: Part II',
-            releaseDate: '1974-12-20',
-            rating: '9.0',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '57,300,000'
-        },
-        {
-            id: 4,
-            title: 'The Dark Knight',
-            releaseDate: '2008-07-18',
-            rating: '9.0',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '534,858,444'
-        },
-        {
-            id: 5,
-            title: 'Mad Max: Fury Road',
-            releaseDate: '2015-05-15',
-            rating: '8.1',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '153,629,485'
-        },
-        {
-            id: 6,
-            title: 'Madaari',
-            releaseDate: '2016-07-22',
-            rating: '8.1',
-            type: 'movie',
-            releaseType: 'theatrical',
-            grossRevenue: '0'
-        }
-    ]);
+    const [type, setType] = React.useState('Movies');
+
+    const [movies, setMovies] = React.useState([]);
+
+    const [tvShows, setTvShows] = React.useState([]);
 
     useEffect(() => {
-        // TODO: Fetch movies from the Movie Database
-    });
+        fetch("http://localhost:8080/movies", {
+            method: 'GET'
+        }).then(response => response.json())
+            .then(data => {
+                let newMovies = [];
+                data.forEach((movie, index) => {
+                    newMovies.push({
+                        id: index+1,
+                        ...movie
+                    });
+                });
+                setMovies(newMovies);
+            }
+        );
+
+        fetch("http://localhost:8080/tv-shows", {
+            method: 'GET'
+        }).then(response => response.json())
+            .then(data => {
+                let newTvShows = [];
+                data.forEach((tvShow, index) => {
+                    newTvShows.push({
+                        id: index+1,
+                        ...tvShow
+                    });
+                });
+                setTvShows(newTvShows);
+                console.log(tvShows)
+            }
+        );
+    }, []);
 
     const handleAddToWatchlist = (movie) => {
-        console.log(movie);
 
-        // TODO: Add movie to user's watchlist
     }
 
 
     return(
         <div>
             <Navbar />
-            <h1>Home</h1>
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridGap: '1rem', padding: '1rem'}}>
-                {movies.map(movie => (
-                    <div key={movie.id} style={{border: '1px solid black', padding: '1rem'}}>
-                        <h2>{movie.title}</h2>
-                        <p>Release Date: {movie.releaseDate}</p>
-                        <p>Rating: {movie.rating}</p>
-                        <p>Type: {movie.type}</p>
-                        <p>Release Type: {movie.releaseType}</p>
-                        <p>Gross Revenue: {movie.grossRevenue}</p>
-                        {user ? <button onClick={event => {handleAddToWatchlist(movie)}}>Add to Watchlist</button> : null}
-                    </div>
-                ))}
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: 'lightgrey'}}>
+                <button style={{backgroundColor: type === 'Movies' ? 'lightblue' : 'white', padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setType('Movies')}>Movies</button>
+                <button style={{backgroundColor: type === 'TV Shows' ? 'lightblue' : 'white', padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setType('TV Shows')}>TVShows</button>
             </div>
+            {type === 'Movies' ? (
+                <>
+                    <h2 style={{textAlign: 'center'}}>Movies</h2>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: 'lightgrey'}}>
+                        <button style={{padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setMovies(movies.sort((a, b) => a.rating - b.rating))}>Sort by Rating</button>
+                        <button style={{padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setMovies(movies.sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate)))}>Sort by Release Date</button>
+                    </div>
+
+                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridGap: '1rem', padding: '1rem'}}>
+                        {movies.map(movie => (
+                            <div key={movie.id} style={{border: '1px solid black', padding: '1rem'}}>
+                                <h2>{movie.Title}</h2>
+                                <p>Release Date: {movie.ReleaseDate}</p>
+                                <p>Rating: {movie.Rating}</p>
+                                <p>Type: {movie.ReleaseType}</p>
+                                <p>Release Type: {movie.ReleaseType}</p>
+                                <p>Gross Revenue: {movie.GrossRevenue}</p>
+                                {user ? <button onClick={event => {handleAddToWatchlist(movie)}}>Add to Watchlist</button> : null}
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <>
+                    <h2 style={{textAlign: 'center'}}>TV Shows</h2>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: 'lightgrey'}}>
+                        <button style={{padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setTvShows(tvShows.sort((a, b) => a.rating - b.rating))}>Sort by Rating</button>
+                        <button style={{padding: ' 1% 20%', borderRadius: '5px', textAlign: 'center'}} onClick={() => setTvShows(tvShows.sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate)))}>Sort by Release Date</button>
+                    </div>
+                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridGap: '1rem', padding: '1rem'}}>
+                        {tvShows.map(tvShow => (
+                            <div key={tvShow.id} style={{border: '1px solid black', padding: '1rem'}}>
+                                <h2>{tvShow.Title}</h2>
+                                <p>Release Date: {tvShow.ReleaseDate}</p>
+                                <p>Rating: {tvShow.Rating}</p>
+                                <p>Number of Seasons: {tvShow.NumSeasons}</p>
+                                <p>Number of Episodes: {tvShow.NumEpisodes}</p>
+                                {user ? <button onClick={event => {handleAddToWatchlist(tvShow)}}>Add to Watchlist</button> : null}
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     )
 }
