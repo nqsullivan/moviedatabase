@@ -6,7 +6,7 @@
 1. Go to `server/config.properties`
 2. Change `DB_URL` to your database url (e.g. `jdbc:mysql://localhost:3306/moviedatabase`)
 3. Change `DB_USER` to your database user (e.g. `root`)
-4. Change `DB_PASSWORD` to your database password (e.g. `password`)
+4. Change `DB_PASS` to your database password (e.g. `password`)
 
 ## Setup Backend
 1. Install maven 
