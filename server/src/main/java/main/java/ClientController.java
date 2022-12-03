@@ -17,22 +17,49 @@ public class ClientController {
             response.header("Access-Control-Allow-Methods", "GET");
         });
 
-        get("/watchlist/:userid", (req, res) -> {
-            String watchList = dq.getWatchlist(":userid");
+        get("/watchlistMovie/:userid", (req, res) -> {
+            String watchList = dq.getWatchlistMovie(req.params(":userid"));
             res.status(200);
             return watchList;
+        });
+        
+        get("/watchlistTV/:userid", (req, res) -> {
+            String watchList = dq.getWatchlistTV(req.params(":userid"));
+            res.status(200);
+            return watchList;
+        });
+        
+        get("addToWatchlist/:userid/:title/:releasedate", (req, res) -> {
+        	boolean added = dq.addToWatchlist(req.params(":userid"), req.params(":title"), req.params(":releasedate"));
+        	if(added) 	
+        		res.status(200);
+        	else		
+        		res.status(400);
+        	
+        	return added;
+        });
+        
+        get("removeFromWatchlist/:userid/:title/:releasedate", (req, res) -> {
+        	boolean removed = dq.removeFromWatchlist(req.params(":userid"), req.params(":title"), req.params(":releasedate"));
+        	if(removed)	
+        		res.status(200);
+        	else		
+        		res.status(400);
+        	
+        	return removed;
         });
 
         get("/tv-shows", (req, res) -> {
             String tvshows = dq.getAllTvShows();
-
             res.status(200);
+            
             return tvshows;
         });
 
         get("/movies", (req, res) -> {
             String movies = dq.getAllMovies();
             res.status(200);
+            
             return movies;
         });
 
@@ -40,12 +67,10 @@ public class ClientController {
             System.out.println("Creating user with id: " + req.params(":userid") + " and password: " + req.params(":password"));
             boolean created = dq.createUser(req.params(":userid"), req.params(":password"));
 
-            if(created) {
+            if(created) 
                 res.status(200);
-            }
-            else {
+            else 
                 res.status(400);
-            }
 
             return created;
         });
@@ -56,5 +81,7 @@ public class ClientController {
             res.status(200);
             return isValid;
         });
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(dq::closeConnection));
     }
 }

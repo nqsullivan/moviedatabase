@@ -134,7 +134,7 @@ public class DataQuery {
 		try {
 			stmt = conn.createStatement();
 			
-			String query = "select numseasons, numepisodes, releasedate, title from tv_show";
+			String query = "select numseasons, numepisodes, media.releasedate, media.title, rating from tv_show NATURAL JOIN Media WHERE tv_show.releasedate = media.releasedate and tv_show.title = media.title;";
 			rs = stmt.executeQuery(query);
 			
 			return JsonCreator.toJson(rs).toString();						
@@ -147,11 +147,60 @@ public class DataQuery {
 		
 	}
 	
-	//Returns Json string containing all saved media within a specified user's watch-list
-	public String getWatchlist(String userEmail) {
+	public boolean addToWatchlist(String userEmail, String title, String releaseDate) {
 		try {
 			stmt = conn.createStatement();
-			String query = "select ReleaseDate, Title from watch_list where UserEmail = '" + userEmail + "'";
+			String query = "INSERT INTO WATCH_LIST (`UserEmail`, `ReleaseDate`, `Title`) VALUES ('" + userEmail + 
+					"', '" + releaseDate + "', '" + title + "');";
+			
+			stmt.execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean removeFromWatchlist(String userEmail, String title, String releaseDate) {
+		try {
+			stmt = conn.createStatement();
+			String query = "delete from watch_list where userEmail = '" + userEmail + "' and title = '" title + "' and releasedate = '" + 
+					releaseDate + "';";
+			
+			stmt.execute(query);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//Returns Json string containing all saved media within a specified user's watch-list
+	public String getWatchlistTV(String userEmail) {
+		try {
+			stmt = conn.createStatement();
+			String query = "select numseasons, numepisodes, rating, watch_list.releasedate, watch_list.title from tv_show, watch_list NATURAL JOIN Media WHERE tv_show.releasedate = watch_list.releasedate and tv_show.title = watch_list.title and watch_list.useremail = '" +
+			userEmail + "';";
+			rs = stmt.executeQuery(query);
+			
+			return JsonCreator.toJson(rs).toString();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
+	
+	public String getwatchlistMovie(String userEmail) {
+		try {
+			stmt = conn.createStatement();
+			String query = "select grossrevenue, releasetype, watch_list.releasedate, watch_list.title, rating from movie, watch_list NATURAL JOIN Media WHERE movie.releasedate = watch_list.releasedate and movie.title = watch_list.title and watch_list.useremail = '" +
+			userEmail + "';";
 			rs = stmt.executeQuery(query);
 			
 			return JsonCreator.toJson(rs).toString();
@@ -185,8 +234,10 @@ public class DataQuery {
 	
 	public static void main(String[] args) {
 		DataQuery server = new DataQuery();
-		System.out.println(server.getAllMovies());
-		System.out.println(server.getAllTvShows());
+		System.out.println(server.getwatchlistMovie("sampleemail1@sample.com"));
+		System.out.println(server.addToWatchlist("sampleemail1@sample.com", "The Two Popes", "2019-01-25");
+		System.out.println(server.getwatchlistTV("sampleemail1@sample.com"));
+		System.out.println(server.removeFromWatchlist("sampleemail1@sample.com", "Frozen II", "2019-03-05");
 		server.closeConnection();		
 	}
 }
