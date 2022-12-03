@@ -66,7 +66,7 @@ const Home = () => {
                     if (result === 'true') {
                         alert('Added to watchlist');
                     } else {
-                        alert('Failed to add to watchlist, try logging in again');
+                        alert('The media is already in your watchlist');
                     }
                 }
             );
