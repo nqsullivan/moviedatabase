@@ -1,10 +1,16 @@
 package main.java;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 /**
  * Creates connection to moviedatabase and provides methods to make
@@ -21,10 +27,10 @@ public class DataQuery {
 	static Connection conn;
 	static Statement stmt;
 	
-	DataQuery() {
+	public DataQuery() {
 
 		// Get database credentials from config.properties
-		Properties prop = readPropertiesFile("config.properties");
+		Properties prop = readPropertiesFile("server/config.properties");
 		url = prop.getProperty("DB_URL");
 		user = prop.getProperty("DB_USER");
 		password = prop.getProperty("DB_PASS");
@@ -46,7 +52,8 @@ public class DataQuery {
 
 	public static Properties readPropertiesFile(String fileName) {
 		Properties prop = new Properties();
-		try (InputStream input = new FileInputStream(fileName)) {
+		Path path = Paths.get(fileName);
+		try (InputStream input = Files.newInputStream(path)) {
 			prop.load(input);
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -103,13 +110,13 @@ public class DataQuery {
 	}
 	
 	//Returns Json string containing data for all movies in the database
-	public String allMovies(){
+	public String getAllMovies(){
 		try {
 			stmt = conn.createStatement();
 			
 			String query = "select grossrevenue, releasetype, releasedate, title from movie";
 			rs = stmt.executeQuery(query);
-			
+
 			return JsonCreator.toJson(rs).toString();
 		} 
 		
@@ -121,7 +128,7 @@ public class DataQuery {
 	}
 	
 	//Returns Json string containing data for all TV shows in the database
-	public String allTvShows(){
+	public String getAllTvShows(){
 		try {
 			stmt = conn.createStatement();
 			
@@ -139,7 +146,7 @@ public class DataQuery {
 	}
 	
 	//Returns Json string containing all saved media within a specified user's watch-list
-	public String watchlist(String userEmail) {
+	public String getWatchlist(String userEmail) {
 		try {
 			stmt = conn.createStatement();
 			String query = "select ReleaseDate, Title from watch_list where UserEmail = '" + userEmail + "'";
@@ -176,8 +183,8 @@ public class DataQuery {
 	
 	public static void main(String[] args) {
 		DataQuery server = new DataQuery();
-		System.out.println(server.allMovies());
-		System.out.println(server.allTvShows());
+		System.out.println(server.getAllMovies());
+		System.out.println(server.getAllTvShows());
 		server.closeConnection();		
 	}
 }
