@@ -72,11 +72,10 @@ const Home = () => {
             );
     }
 
-
     return (
         <div>
             <Navbar/>
-            <h2>Home</h2>
+            <h2 style={{padding: '0 1rem'}}>Home</h2>
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',

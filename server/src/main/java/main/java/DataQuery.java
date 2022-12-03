@@ -30,7 +30,7 @@ public class DataQuery {
 	public DataQuery() {
 
 		// Get database credentials from config.properties
-		Properties prop = readPropertiesFile("server/config.properties");
+		Properties prop = readPropertiesFile("config.properties");
 		url = prop.getProperty("DB_URL");
 		user = prop.getProperty("DB_USER");
 		password = prop.getProperty("DB_PASS");
@@ -165,7 +165,7 @@ public class DataQuery {
 	public boolean removeFromWatchlist(String userEmail, String title, String releaseDate) {
 		try {
 			stmt = conn.createStatement();
-			String query = "delete from watch_list where userEmail = '" + userEmail + "' and title = '" title + "' and releasedate = '" + 
+			String query = "delete from watch_list where userEmail = '" + userEmail + "' and title = '" + title + "' and releasedate = '" +
 					releaseDate + "';";
 			
 			stmt.execute(query);
@@ -196,7 +196,7 @@ public class DataQuery {
 		
 	}
 	
-	public String getwatchlistMovie(String userEmail) {
+	public String getWatchlistMovie(String userEmail) {
 		try {
 			stmt = conn.createStatement();
 			String query = "select grossrevenue, releasetype, watch_list.releasedate, watch_list.title, rating from movie, watch_list NATURAL JOIN Media WHERE movie.releasedate = watch_list.releasedate and movie.title = watch_list.title and watch_list.useremail = '" +
@@ -234,10 +234,10 @@ public class DataQuery {
 	
 	public static void main(String[] args) {
 		DataQuery server = new DataQuery();
-		System.out.println(server.getwatchlistMovie("sampleemail1@sample.com"));
-		System.out.println(server.addToWatchlist("sampleemail1@sample.com", "The Two Popes", "2019-01-25");
-		System.out.println(server.getwatchlistTV("sampleemail1@sample.com"));
-		System.out.println(server.removeFromWatchlist("sampleemail1@sample.com", "Frozen II", "2019-03-05");
+		System.out.println(server.getWatchlistMovie("sampleemail1@sample.com"));
+		System.out.println(server.addToWatchlist("sampleemail1@sample.com", "The Two Popes", "2019-01-25"));
+		System.out.println(server.getWatchlistTV("sampleemail1@sample.com"));
+		System.out.println(server.removeFromWatchlist("sampleemail1@sample.com", "Frozen II", "2019-03-05"));
 		server.closeConnection();		
 	}
 }

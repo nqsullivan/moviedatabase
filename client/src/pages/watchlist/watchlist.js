@@ -26,25 +26,26 @@ const Watchlist = () => {
     }, [filter]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/watchlistTv/" + user, {
-            method: 'GET'
-        }).then(response => response.json())
-            .then(data => {
-                    let newMovies = [];
-                    data.forEach((movie, index) => {
-                        newMovies.push({
-                            id: index + 1,
-                            ...movie
+        if(user) {
+            fetch("http://localhost:8080/watchlistMovie/" + user, {
+                method: 'GET'
+            }).then(response => response.json())
+                .then(data => {
+                        let newMovies = [];
+                        data.forEach((movie, index) => {
+                            newMovies.push({
+                                id: index + 1,
+                                ...movie
+                            });
                         });
-                    });
-                    setMovies(newMovies);
-                }
-            );
+                        setMovies(newMovies);
+                    }
+                );
 
-        fetch("http://localhost:8080/watchlistMovie/" + user, {
-            method: 'GET'
-        }).then(response => response.json())
-            .then(data => {
+            fetch("http://localhost:8080/watchlistTV/" + user, {
+                method: 'GET'
+            }).then(response => response.json())
+                .then(data => {
                     let newTvShows = [];
                     data.forEach((tvShow, index) => {
                         newTvShows.push({
@@ -54,8 +55,8 @@ const Watchlist = () => {
                     });
                     setTvShows(newTvShows);
                     console.log(tvShows)
-                }
-            );
+                });
+        }
     }, []);
 
     const handleRemoveFromWatchlist = (movie) => {
@@ -65,43 +66,30 @@ const Watchlist = () => {
             .then(response => response.text())
             .then(result => {
                     if (result === 'true') {
-                        alert('Added to watchlist');
+                        alert('Removed from watchlist');
                     } else {
-                        alert('Failed to add to watchlist, try logging in again');
+                        alert('Failed to remove from watchlist, try logging in again');
                     }
                 }
             );
+
+        if(movie.ReleaseType){
+            setMovies(movies.filter(m => m.Title !== movie.Title && m.ReleaseDate !== movie.ReleaseDate));
+        }
+
+        if(movie.NumSeasons){
+            setTvShows(tvShows.filter(m => m.Title !== movie.Title && m.ReleaseDate !== movie.ReleaseDate));
+        }
+
     }
 
 
     return (
         <div>
             <Navbar/>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '1rem 2rem',
-                backgroundColor: 'lightgrey'
-            }}>
-                <button style={{
-                    backgroundColor: type === 'Movies' ? 'lightblue' : 'white',
-                    padding: ' 1% 20%',
-                    borderRadius: '5px',
-                    textAlign: 'center'
-                }} onClick={() => setType('Movies')}>Movies
-                </button>
-                <button style={{
-                    backgroundColor: type === 'TV Shows' ? 'lightblue' : 'white',
-                    padding: ' 1% 20%',
-                    borderRadius: '5px',
-                    textAlign: 'center'
-                }} onClick={() => setType('TV Shows')}>TVShows
-                </button>
-            </div>
-            {type === 'Movies' ? (
+            <h2 style={{padding: '0 1rem'}}>Watchlist</h2>
+            {user ? (
                 <>
-                    <h2 style={{textAlign: 'center'}}>Movies</h2>
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -109,96 +97,140 @@ const Watchlist = () => {
                         padding: '1rem 2rem',
                         backgroundColor: 'lightgrey'
                     }}>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setMovies(movies.sort((a, b) => a.Rating - b.Rating));
-                                    setFilter(filter + '1');
-                                }}>Sort by Rating
+                        <button style={{
+                            backgroundColor: type === 'Movies' ? 'lightblue' : 'white',
+                            padding: ' 1% 20%',
+                            borderRadius: '5px',
+                            textAlign: 'center'
+                        }} onClick={() => setType('Movies')}>Movies
                         </button>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setMovies(movies.sort((a, b) => new Date(a.ReleaseDate) - new Date(b.ReleaseDate)));
-                                    setFilter(filter + '1');
-                                }}>Sort by Release Date
-                        </button>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setMovies(movies.sort((a, b) => a.Title.localeCompare(b.Title)));
-                                    setFilter(filter + '1');
-                                }}>Sort by Title
+                        <button style={{
+                            backgroundColor: type === 'TV Shows' ? 'lightblue' : 'white',
+                            padding: ' 1% 20%',
+                            borderRadius: '5px',
+                            textAlign: 'center'
+                        }} onClick={() => setType('TV Shows')}>TVShows
                         </button>
                     </div>
-
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
-                        gridGap: '1rem',
-                        padding: '1rem'
-                    }}>
-                        {movies.map(movie => (
-                            <div key={movie.id} style={{border: '1px solid black', padding: '1rem'}}>
-                                <h2>{movie.Title}</h2>
-                                <p>Release Date: {movie.ReleaseDate}</p>
-                                <p>Rating: {movie.Rating}</p>
-                                <p>Type: {movie.ReleaseType}</p>
-                                <p>Release Type: {movie.ReleaseType}</p>
-                                <p>Gross Revenue: {movie.GrossRevenue}</p>
-                                {user ? <button onClick={event => {
-                                    handleRemoveFromWatchlist(movie)
-                                }}>Add to Watchlist</button> : null}
+                    {type === 'Movies' ? (
+                        <>
+                            <h2 style={{textAlign: 'center'}}>Movies</h2>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '1rem 2rem',
+                                backgroundColor: 'lightgrey'
+                            }}>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setMovies(movies.sort((a, b) => a.Rating - b.Rating));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Rating
+                                </button>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setMovies(movies.sort((a, b) => new Date(a.ReleaseDate) - new Date(b.ReleaseDate)));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Release Date
+                                </button>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setMovies(movies.sort((a, b) => a.Title.localeCompare(b.Title)));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Title
+                                </button>
                             </div>
-                        ))}
-                    </div>
+
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(4, 1fr)',
+                                gridGap: '1rem',
+                                padding: '1rem'
+                            }}>
+                                <>{movies.map(movie => (
+                                    <div key={movie.id} style={{border: '1px solid black', padding: '1rem'}}>
+                                        <h2>{movie.Title}</h2>
+                                        <p>Release Date: {movie.ReleaseDate}</p>
+                                        <p>Rating: {movie.Rating}</p>
+                                        <p>Type: {movie.ReleaseType}</p>
+                                        <p>Release Type: {movie.ReleaseType}</p>
+                                        <p>Gross Revenue: {movie.GrossRevenue}</p>
+                                        {user ? <button onClick={event => {
+                                            handleRemoveFromWatchlist(movie)
+                                        }}>Remove from Watchlist</button> : null}
+                                    </div>
+                                ))}</>
+                                <>
+                                    {movies.length === 0 ? (
+                                        <h2 style={{textAlign: 'center'}}>No movies in watchlist</h2>
+                                    ) : null}
+                                </>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h2 style={{textAlign: 'center'}}>TV Shows</h2>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '1rem 2rem',
+                                backgroundColor: 'lightgrey'
+                            }}>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setTvShows(tvShows.sort((a, b) => a.Rating - b.Rating));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Rating
+                                </button>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setTvShows(tvShows.sort((a, b) => new Date(a.ReleaseDate) - new Date(b.ReleaseDate)));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Release Date
+                                </button>
+                                <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
+                                        onClick={() => {
+                                            setTvShows(tvShows.sort((a, b) => a.Title.localeCompare(b.Title)));
+                                            setFilter(filter + '1');
+                                        }}>Sort by Title
+                                </button>
+                            </div>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(4, 1fr)',
+                                gridGap: '1rem',
+                                padding: '1rem'
+                            }}>
+                                <>
+                                    {tvShows.map(tvShow => (
+                                        <div key={tvShow.id} style={{border: '1px solid black', padding: '1rem'}}>
+                                            <h2>{tvShow.Title}</h2>
+                                            <p>Release Date: {tvShow.ReleaseDate}</p>
+                                            <p>Rating: {tvShow.Rating}</p>
+                                            <p>Number of Seasons: {tvShow.NumSeasons}</p>
+                                            <p>Number of Episodes: {tvShow.NumEpisodes}</p>
+                                            {user ? <button onClick={event => {
+                                                handleRemoveFromWatchlist(tvShow)
+                                            }}>Remove from Watchlist</button> : null}
+                                        </div>
+                                    ))}
+                                </>
+                                <>
+                                    {tvShows.length === 0 ? (
+                                        <h2 style={{textAlign: 'center'}}>No tv shows in watchlist</h2>
+                                    ) : null}
+                                </>
+                            </div>
+                        </>
+                    )}
                 </>
             ) : (
-                <>
-                    <h2 style={{textAlign: 'center'}}>TV Shows</h2>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '1rem 2rem',
-                        backgroundColor: 'lightgrey'
-                    }}>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setTvShows(tvShows.sort((a, b) => a.Rating - b.Rating));
-                                    setFilter(filter + '1');
-                                }}>Sort by Rating
-                        </button>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setTvShows(tvShows.sort((a, b) => new Date(a.ReleaseDate) - new Date(b.ReleaseDate)));
-                                    setFilter(filter + '1');
-                                }}>Sort by Release Date
-                        </button>
-                        <button style={{padding: ' 1% 10%', borderRadius: '5px', textAlign: 'center'}}
-                                onClick={() => {
-                                    setTvShows(tvShows.sort((a, b) => a.Title.localeCompare(b.Title)));
-                                    setFilter(filter + '1');
-                                }}>Sort by Title
-                        </button>
-                    </div>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
-                        gridGap: '1rem',
-                        padding: '1rem'
-                    }}>
-                        {tvShows.map(tvShow => (
-                            <div key={tvShow.id} style={{border: '1px solid black', padding: '1rem'}}>
-                                <h2>{tvShow.Title}</h2>
-                                <p>Release Date: {tvShow.ReleaseDate}</p>
-                                <p>Rating: {tvShow.Rating}</p>
-                                <p>Number of Seasons: {tvShow.NumSeasons}</p>
-                                <p>Number of Episodes: {tvShow.NumEpisodes}</p>
-                                {user ? <button onClick={event => {
-                                    handleRemoveFromWatchlist(tvShow)
-                                }}>Add to Watchlist</button> : null}
-                            </div>
-                        ))}
-                    </div>
-                </>
+                <div style={{textAlign: 'center'}}>
+                    <h1>Please Sign In To Make/view your watchlist</h1>
+                    <Link to="/login">Login</Link>
+                </div>
             )}
         </div>
     )
